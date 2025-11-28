@@ -14,6 +14,13 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            // Unify customers and engineers/admin under users
+            $table->enum('role', ['customer', 'engineer', 'admin'])->default('customer');
+            $table->string('phone', 50)->nullable();
+            // Engineer/Admin specific fields
+            $table->string('specialization', 255)->nullable();
+            $table->string('department', 255)->nullable();
+            $table->date('hire_date')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
