@@ -13,8 +13,12 @@ use App\Http\Controllers\Api\V1\TaskPartController;
 use App\Http\Controllers\Api\V1\ServiceReportController;
 use App\Http\Controllers\Api\V1\InvoiceController;
 use App\Http\Controllers\Api\V1\InvoiceLineItemController;
+use App\Http\Controllers\Api\V1\AuthController;
 
 Route::prefix('v1')->group(function () {
+    // Simple Auth (no tokens) - returns user data on login
+    Route::post('auth/login', [AuthController::class, 'login']);
+
     Route::apiResource('users', UserController::class);
     Route::apiResource('contacts', ContactController::class);
     Route::apiResource('buildings', BuildingController::class);
@@ -34,6 +38,7 @@ Route::prefix('v1')->group(function () {
 
     Route::apiResource('tasks', TaskController::class);
     Route::apiResource('service-reports', ServiceReportController::class);
+    Route::post('service-reports/{service_report}/attachment', [ServiceReportController::class, 'uploadAttachment']);
     Route::apiResource('invoices', InvoiceController::class);
     Route::apiResource('invoice-line-items', InvoiceLineItemController::class);
 });

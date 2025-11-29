@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Resources\ServiceReportResource;
 use App\Models\ServiceReport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ServiceReportController extends BaseApiController
 {
@@ -61,6 +62,21 @@ class ServiceReportController extends BaseApiController
     {
         $service_report->delete();
         return $this->success(null, 204);
+    }
+
+    public function uploadAttachment(Request $request, ServiceReport $service_report)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,webp,doc,docx|max:8192',
+        ]);
+
+        $path = $request->file('file')->store('service_reports', 'public');
+        $url = Storage::disk('public')->url($path);
+
+        $service_report->update(['attachment_url' => $url]);
+        $service_report->load($this->with);
+
+        return $this->success(new ServiceReportResource($service_report), 201);
     }
 }
 
